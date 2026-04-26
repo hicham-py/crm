@@ -389,11 +389,13 @@ function renderAllCharts() {
     if (typeof Plotly === 'undefined') return;
 
     const layoutBase = {
-        margin: { t: 10, b: 30, l: 40, r: 10 },
-        font: { family: 'Inter, sans-serif', size: 10 },
+        margin: { t: 30, b: 60, l: 60, r: 20 },
+        font: { family: 'Inter, sans-serif', size: 10, color: '#475569' },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-        showlegend: false
+        showlegend: false,
+        xaxis: { automargin: true, gridcolor: '#f1f5f9' },
+        yaxis: { automargin: true, gridcolor: '#f1f5f9' }
     };
 
     const tonByDay = aggregate(filteredData, 'Date', 'Tonnage');
@@ -404,7 +406,7 @@ function renderAllCharts() {
         x: sortedDays,
         y: sortedDays.map(d => tonByDay[d]),
         type: 'scatter', fill: 'tozeroy', line: { color: COLORS[0], width: 3 }
-    }], layoutBase);
+    }], { ...layoutBase, xaxis: { ...layoutBase.xaxis, tickangle: -45 } });
 
     // 3. Agency Share
     const tonByAg = aggregate(filteredData, 'Agence', 'Tonnage');
@@ -420,7 +422,7 @@ function renderAllCharts() {
         x: Object.keys(prodCounts),
         y: Object.values(prodCounts),
         type: 'bar', marker: { color: COLORS[1] }
-    }], layoutBase);
+    }], { ...layoutBase, xaxis: { ...layoutBase.xaxis, tickangle: -45 } });
 
     // 5. Stock Tonnage
     const tonByStock = aggregate(filteredData, 'Stock', 'Tonnage');
@@ -429,7 +431,7 @@ function renderAllCharts() {
         y: sortedStocks.map(s => s[0]),
         x: sortedStocks.map(s => s[1]),
         type: 'bar', orientation: 'h', marker: { color: COLORS[2] }
-    }], { ...layoutBase, margin: { ...layoutBase.margin, l: 100 } });
+    }], { ...layoutBase, margin: { ...layoutBase.margin, l: 120 } });
 
     // 6. Top Trucks
     const truckData = {};
@@ -446,7 +448,7 @@ function renderAllCharts() {
         text: top10Trucks.map(t => t[1].agence),
         type: 'bar', orientation: 'h',
         marker: { color: top10Trucks.map(t => agToColor(t[1].agence)) }
-    }], { ...layoutBase, margin: { ...layoutBase.margin, l: 80 } });
+    }], { ...layoutBase, margin: { ...layoutBase.margin, l: 100 } });
 
     // 7. Tonnage by Vessel
     const tonByVessel = aggregate(filteredData, 'Navires', 'Tonnage');
@@ -454,7 +456,7 @@ function renderAllCharts() {
         x: Object.keys(tonByVessel),
         y: Object.values(tonByVessel),
         type: 'bar', marker: { color: COLORS[4] }
-    }], layoutBase);
+    }], { ...layoutBase, xaxis: { ...layoutBase.xaxis, tickangle: -45 } });
 
     // 8. Hourly Activity
     const hourCounts = {};
@@ -495,7 +497,13 @@ function renderAllCharts() {
         type: 'bar',
         marker: { color: COLORS[i % COLORS.length] }
     }));
-    Plotly.newPlot('chart-agency-product-matrix', matrixTraces, { ...layoutBase, barmode: 'stack', showlegend: true });
+    Plotly.newPlot('chart-agency-product-matrix', matrixTraces, {
+        ...layoutBase,
+        barmode: 'stack',
+        showlegend: true,
+        legend: { orientation: 'h', y: -0.2 },
+        xaxis: { ...layoutBase.xaxis, tickangle: -45 }
+    });
 
     // 12. Truck Utilization
     const tripsByTruck = countBy(filteredData, 'Matricule');
@@ -504,7 +512,7 @@ function renderAllCharts() {
         x: sortedTrips.map(t => t[0]),
         y: sortedTrips.map(t => t[1]),
         type: 'bar', marker: { color: COLORS[7] }
-    }], layoutBase);
+    }], { ...layoutBase, xaxis: { ...layoutBase.xaxis, tickangle: -45 } });
 
     // 13. Load Efficiency
     const countByDay = countBy(filteredData, 'Date');
@@ -517,7 +525,7 @@ function renderAllCharts() {
         x: sortedDays,
         y: sortedDays.map(d => avgLoadByDay[d]),
         type: 'scatter', mode: 'lines+markers', line: { color: COLORS[1] }
-    }], layoutBase);
+    }], { ...layoutBase, xaxis: { ...layoutBase.xaxis, tickangle: -45 } });
 
     // 16. Inter-Truck Interval Trend
     const intervalByDay = {};
@@ -533,7 +541,7 @@ function renderAllCharts() {
         x: sortedDays,
         y: sortedDays.map(d => intervalByDay[d]),
         type: 'scatter', mode: 'lines+markers', line: { color: COLORS[4] }
-    }], layoutBase);
+    }], { ...layoutBase, xaxis: { ...layoutBase.xaxis, tickangle: -45 } });
 
     // 15. Low Activity
     const truckTripsMap = {};
@@ -548,7 +556,7 @@ function renderAllCharts() {
         x: lowActivityList.map(t => t[1].count),
         text: lowActivityList.map(t => t[1].agence),
         type: 'bar', orientation: 'h', marker: { color: '#cbd5e1' }
-    }], { ...layoutBase, margin: { ...layoutBase.margin, l: 80 } });
+    }], { ...layoutBase, margin: { ...layoutBase.margin, l: 100 } });
 
     // 14. Vessel Timeline
     const vesselRanges = {};
@@ -562,9 +570,9 @@ function renderAllCharts() {
         name: name,
         x: [range.start.toISOString().split('T')[0], range.end.toISOString().split('T')[0]],
         y: [name, name],
-        type: 'scatter', mode: 'lines+markers', line: { width: 15, color: COLORS[0] }, marker: { size: 16 }
+        type: 'scatter', mode: 'lines+markers', line: { width: 10, color: COLORS[0] }, marker: { size: 12 }
     }));
-    Plotly.newPlot('chart-vessel-timeline', vesselTraces, { ...layoutBase, margin: { ...layoutBase.margin, l: 120 } });
+    Plotly.newPlot('chart-vessel-timeline', vesselTraces, { ...layoutBase, margin: { ...layoutBase.margin, l: 140 } });
 
     // 9. CALENDAR HEATMAP (Weeks x Days)
     renderCalendarHeatmap(sortedDays, countByDay, layoutBase);
