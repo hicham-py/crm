@@ -1,244 +1,233 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Performance Logistique - Port d'Agadir</title>
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
-    <style>
-        :root {
-            --primary: #1a56db;
-            --bg: #f3f4f6;
-            --card-bg: #ffffff;
-            --text: #374151;
-            --text-light: #6b7280;
-            --border: #e5e7eb;
-            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            line-height: 1.5;
-        }
-
-        header {
-            background: linear-gradient(135deg, #1a56db 0%, #0e3a8c 100%);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-
-        .upload-section {
-            background: white;
-            padding: 1.5rem;
-            margin: -1.5rem auto 2rem;
-            max-width: 600px;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .upload-section input {
-            display: none;
-        }
-
-        .upload-label {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .upload-label:hover {
-            background: #1e429f;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 1rem 3rem;
-        }
-
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .kpi-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            box-shadow: var(--shadow);
-            border-left: 4px solid var(--primary);
-        }
-
-        .kpi-label {
-            font-size: 0.875rem;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-            font-weight: 600;
-        }
-
-        .kpi-value {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #111827;
-            margin-top: 0.25rem;
-        }
-
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 1024px) {
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .chart-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            box-shadow: var(--shadow);
-            min-height: 400px;
-        }
-
-        .chart-card h3 {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            color: #111827;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
-
-        #loading {
-            display: none;
-            text-align: center;
-            padding: 2rem;
-            font-weight: 600;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logistics Dashboard - Port d'Agadir</title>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    .chart-container { background: white; border-radius: 0.75rem; padding: 1rem; border: 1px solid #e2e8f0; height: 400px; }
+    select[multiple] { height: 100px !important; }
+  </style>
 </head>
-<body>
+<body class="text-gray-900">
 
-<header>
-    <h1>Dashboard Performance Logistique</h1>
-    <p>Port d'Agadir - Analyse Interactive</p>
-</header>
+  <div class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-blue-700 text-white py-6 shadow-lg mb-8">
+      <div class="container mx-auto px-4 text-center">
+        <h1 class="text-3xl font-bold tracking-tight">🚢 Dashboard Performance Logistique</h1>
+        <p class="text-blue-100 mt-1 opacity-90">Port d'Agadir — Analyse Interactive & Synthèse Automatique</p>
+      </div>
+    </header>
 
-<div class="upload-section">
-    <label for="file-upload" class="upload-label">
-        📁 Charger le fichier JSON des données
-    </label>
-    <input type="file" id="file-upload" accept=".json">
-    <p id="file-name" style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-light);"></p>
-</div>
+    <main class="container mx-auto px-4 pb-12">
+      <!-- Upload Section -->
+      <div class="max-w-xl mx-auto mb-10 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
+        <label for="file-upload" class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition inline-flex items-center shadow-md">
+          <span class="mr-2">📂</span> Charger le fichier JSON des données
+        </label>
+        <input id="file-upload" type="file" accept=".json" class="hidden">
+        <p id="file-name" class="mt-4 text-sm text-gray-500 font-medium italic">Fichier : base.json</p>
+      </div>
 
-<div id="loading">Chargement et analyse des données en cours...</div>
+      <!-- Loading Spinner -->
+      <div id="loading" class="hidden text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+        <p class="mt-4 text-gray-600 font-medium">Traitement des 9 500+ enregistrements...</p>
+      </div>
 
-<div class="container" id="dashboard-content" style="display: none;">
-    <div class="kpi-grid">
-        <div class="kpi-card">
-            <div class="kpi-label">Total Envois</div>
-            <div id="kpi-total-envois" class="kpi-value">0</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-label">Tonnage Total (T)</div>
-            <div id="kpi-total-tonnage" class="kpi-value">0</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-label">Quantité Moyenne (T)</div>
-            <div id="kpi-avg-tonnage" class="kpi-value">0</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-label">Nombre de Chauffeurs</div>
-            <div id="kpi-unique-drivers" class="kpi-value">0</div>
-        </div>
-    </div>
+      <!-- Dashboard Content -->
+      <div id="dashboard-content" class="hidden">
 
-    <div class="charts-grid">
-        <div class="chart-card">
-            <h3>Répartition du Tonnage par Agence</h3>
-            <div id="chart-tonnage-agence"></div>
+        <!-- Filter Bar -->
+        <div class="bg-white p-6 rounded-xl shadow-sm mb-8 border border-gray-200">
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
+            <div class="md:col-span-2">
+              <label class="block text-[10px] font-black text-gray-400 mb-1 uppercase tracking-widest">📅 Plage de Dates</label>
+              <div class="flex gap-2">
+                  <input type="date" id="filter-date-start" class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                  <input type="date" id="filter-date-end" class="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+              </div>
+            </div>
+            <div>
+              <label class="block text-[10px] font-black text-gray-400 mb-1 uppercase tracking-widest">🚢 Navire</label>
+              <select id="filter-navire" multiple class="w-full p-1 border border-gray-300 rounded text-[11px] focus:ring-2 focus:ring-blue-500 outline-none"></select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-black text-gray-400 mb-1 uppercase tracking-widest">🏢 Agence</label>
+              <select id="filter-agence" multiple class="w-full p-1 border border-gray-300 rounded text-[11px] focus:ring-2 focus:ring-blue-500 outline-none"></select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-black text-gray-400 mb-1 uppercase tracking-widest">🏭 Stock</label>
+              <select id="filter-stock" multiple class="w-full p-1 border border-gray-300 rounded text-[11px] focus:ring-2 focus:ring-blue-500 outline-none"></select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-black text-gray-400 mb-1 uppercase tracking-widest">📦 Produit</label>
+              <select id="filter-produit" multiple class="w-full p-1 border border-gray-300 rounded text-[11px] focus:ring-2 focus:ring-blue-500 outline-none"></select>
+            </div>
+          </div>
+          <div class="mt-4 flex justify-end">
+            <button id="reset-filters" class="px-4 py-2 bg-gray-50 hover:bg-gray-200 text-gray-600 rounded text-xs font-bold transition border border-gray-200">Réinitialiser tous les filtres</button>
+          </div>
         </div>
-        <div class="chart-card">
-            <h3>Nombre d'envois par Agence</h3>
-            <div id="chart-envois-agence"></div>
-        </div>
-        <div class="chart-card full-width">
-            <h3>Évolution du Tonnage par Jour</h3>
-            <div id="chart-tonnage-time"></div>
-        </div>
-        <div class="chart-card full-width">
-            <h3>Volume d'envois par Jour</h3>
-            <div id="chart-envois-time"></div>
-        </div>
-        <div class="chart-card">
-            <h3>Distribution Horaire des Entrées</h3>
-            <div id="chart-hourly-dist"></div>
-        </div>
-        <div class="chart-card">
-            <h3>Tonnage par Stock d'Origine</h3>
-            <div id="chart-tonnage-stock"></div>
-        </div>
-        <div class="chart-card">
-            <h3>Nombre d'envois par Produit</h3>
-            <div id="chart-envois-produit"></div>
-        </div>
-        <div class="chart-card">
-            <h3>Top 10 Chauffeurs (Nb Envois)</h3>
-            <div id="chart-top-drivers"></div>
-        </div>
-        <div class="chart-card">
-            <h3>Quantité Moyenne par Envoi / Agence</h3>
-            <div id="chart-avg-tonnage-agence"></div>
-        </div>
-        <div class="chart-card">
-            <h3>Distribution du Tonnage (Box Plot)</h3>
-            <div id="chart-tonnage-box"></div>
-        </div>
-        <div class="chart-card">
-            <h3>Tonnage par Produit</h3>
-            <div id="chart-tonnage-produit"></div>
-        </div>
-        <div class="chart-card">
-            <h3>Nombre d'envois par Stock</h3>
-            <div id="chart-envois-stock"></div>
-        </div>
-        <div class="chart-card full-width">
-            <h3>Tonnage Cumulé sur la Période</h3>
-            <div id="chart-cumulative-tonnage"></div>
-        </div>
-        <div class="chart-card full-width">
-            <h3>Répartition Agence vs Stock (Grouped)</h3>
-            <div id="chart-agence-stock"></div>
-        </div>
-    </div>
-</div>
 
-<script src="dashboard.js"></script>
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+          <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-blue-600">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Tonnage</p>
+            <h3 id="kpi-total-tonnage" class="text-2xl font-bold text-gray-800 mt-1">0</h3>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-emerald-500">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Trips</p>
+            <h3 id="kpi-total-envois" class="text-2xl font-bold text-gray-800 mt-1">0</h3>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-amber-500">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Avg Load/Trip</p>
+            <h3 id="kpi-avg-tonnage" class="text-2xl font-bold text-gray-800 mt-1">0</h3>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-indigo-600">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active Trucks</p>
+            <h3 id="kpi-active-trucks" class="text-2xl font-bold text-gray-800 mt-1">0</h3>
+          </div>
+          <div class="bg-white p-5 rounded-xl shadow-sm border-t-4 border-rose-500">
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Avg Inter-Truck Time</p>
+            <h3 id="kpi-avg-interval" class="text-2xl font-bold text-gray-800 mt-1">0</h3>
+          </div>
+        </div>
+
+        <!-- Synthèse Section -->
+        <div class="bg-blue-900 p-8 rounded-2xl shadow-xl mb-12 text-white overflow-hidden relative">
+          <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">📝</div>
+          <h2 class="text-2xl font-bold mb-6 flex items-center">
+            Synthèse & Observations
+          </h2>
+          <div id="synthesis-content" class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div class="space-y-6">
+              <div>
+                <h4 class="text-blue-300 text-[10px] font-black uppercase tracking-[0.2em] mb-2">📋 Résumé Exécutif</h4>
+                <p id="syn-exec" class="text-blue-50 leading-relaxed"></p>
+              </div>
+              <div>
+                <h4 class="text-blue-300 text-[10px] font-black uppercase tracking-[0.2em] mb-2">🏢 Agences</h4>
+                <p id="syn-agencies" class="text-blue-50 leading-relaxed"></p>
+              </div>
+            </div>
+            <div class="space-y-6">
+              <div>
+                <h4 class="text-blue-300 text-[10px] font-black uppercase tracking-[0.2em] mb-2">🏭 Entrepôts & Produits</h4>
+                <p id="syn-stocks" class="text-blue-50 leading-relaxed"></p>
+              </div>
+              <div>
+                <h4 class="text-blue-300 text-[10px] font-black uppercase tracking-[0.2em] mb-2">🚛 Performance des Camions</h4>
+                <div id="syn-trucks" class="text-blue-50 space-y-2"></div>
+                <p id="syn-low-activity" class="mt-4 p-3 bg-blue-800/50 rounded-lg text-xs text-blue-200 border border-blue-700/50 italic"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visualizations Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+          <!-- 2. Daily Tonnage Trend -->
+          <div class="xl:col-span-2 chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">📈 Évolution du Tonnage Quotidien</h4>
+            <div id="chart-tonnage-time" class="h-full"></div>
+          </div>
+
+          <!-- 3. Agency Share -->
+          <div class="chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">🥧 Répartition par Agence</h4>
+            <div id="chart-agency-share" class="h-full"></div>
+          </div>
+
+          <!-- 4. Product Breakdown -->
+          <div class="chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">📦 Volume par Produit</h4>
+            <div id="chart-product-breakdown" class="h-full"></div>
+          </div>
+
+          <!-- 5. Stock Tonnage -->
+          <div class="chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">🏭 Tonnage par Destination</h4>
+            <div id="chart-stock-tonnage" class="h-full"></div>
+          </div>
+
+          <!-- 6. Top Trucks -->
+          <div class="chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">🏆 Top 10 Camions (Tonnage)</h4>
+            <div id="chart-top-trucks" class="h-full"></div>
+          </div>
+
+          <!-- 7. Tonnage by Vessel -->
+          <div class="chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">🚢 Tonnage par Navire</h4>
+            <div id="chart-vessel-tonnage" class="h-full"></div>
+          </div>
+
+          <!-- 8. Hourly Activity -->
+          <div class="chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">⏰ Activité par Heure</h4>
+            <div id="chart-hourly-activity" class="h-full"></div>
+          </div>
+
+          <!-- 10. Load Distribution -->
+          <div class="chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">⚖️ Distribution des Charges</h4>
+            <div id="chart-load-distribution" class="h-full"></div>
+          </div>
+
+          <!-- 11. Agency x Product Matrix -->
+          <div class="xl:col-span-2 chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">🏅 Matrice Agence × Produit</h4>
+            <div id="chart-agency-product-matrix" class="h-full"></div>
+          </div>
+
+          <!-- 12. Truck Utilization -->
+          <div class="chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">🚗 Utilisation des Camions (Trips)</h4>
+            <div id="chart-truck-utilization" class="h-full"></div>
+          </div>
+
+          <!-- 13. Load Efficiency Time -->
+          <div class="xl:col-span-2 chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">📉 Efficacité de Charge Moyenne</h4>
+            <div id="chart-load-efficiency-time" class="h-full"></div>
+          </div>
+
+          <!-- 16. Inter-Truck Interval -->
+          <div class="chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">⏱️ Intervalle Inter-Camion (Tendance)</h4>
+            <div id="chart-inter-truck-interval-time" class="h-full"></div>
+          </div>
+
+          <!-- 15. Low Activity Trucks -->
+          <div class="chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">🔴 Top 10 Faible Activité</h4>
+            <div id="chart-low-activity-trucks" class="h-full"></div>
+          </div>
+
+          <!-- 14. Vessel Timeline -->
+          <div class="xl:col-span-2 chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">🏁 Timeline d'Activité des Navires</h4>
+            <div id="chart-vessel-timeline" class="h-full"></div>
+          </div>
+
+          <!-- 9. Calendar Heatmap Placeholder -->
+          <div class="chart-container">
+            <h4 class="text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">📅 Activité Hebdomadaire</h4>
+            <div id="chart-calendar-heatmap" class="h-full"></div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="dashboard.js"></script>
 </body>
 </html>
